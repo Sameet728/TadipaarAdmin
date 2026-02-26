@@ -153,12 +153,22 @@ const handleLogout = () => {
         <span className="text-sm bg-white/20 px-3 py-1 rounded-full w-fit">
           {currentAdmin.name}
         </span>
-        <button
-      onClick={handleLogout}
-      className="bg-white text-[#0B3D91] px-4 py-1.5 rounded-lg font-semibold hover:bg-gray-100 transition"
-    >
-      🚪 Logout
-    </button>
+       <button
+            onClick={handleLogout}
+            className="
+              flex items-center gap-2
+              border border-white/40
+              bg-white/10 backdrop-blur-sm
+              text-white
+              px-4 py-2
+              rounded-lg
+              text-sm font-medium
+              hover:bg-white hover:text-[#0B3D91]
+              transition-all duration-200
+            "
+          >
+            Logout
+          </button>
 
     </div>
 

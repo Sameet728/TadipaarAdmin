@@ -112,23 +112,22 @@ const handleLogout = () => {
       {currentAdmin.name}
     </span>
 
-    <button
-  onClick={handleLogout}
-  className="
-    flex items-center gap-2
-    bg-white text-[#0B3D91]
-    px-4 py-2
-    rounded-xl
-    font-semibold text-sm
-    shadow-sm
-    hover:bg-gray-100 hover:shadow
-    active:scale-95
-    transition-all duration-200
-  "
->
-  <span className="text-base">🚪</span>
-  <span className="hidden sm:inline">Logout</span>
-</button>
+   <button
+            onClick={handleLogout}
+            className="
+              flex items-center gap-2
+              border border-white/40
+              bg-white/10 backdrop-blur-sm
+              text-white
+              px-4 py-2
+              rounded-lg
+              text-sm font-medium
+              hover:bg-white hover:text-[#0B3D91]
+              transition-all duration-200
+            "
+          >
+            Logout
+          </button>
   </div>
 </div>
 

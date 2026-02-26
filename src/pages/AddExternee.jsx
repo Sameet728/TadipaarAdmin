@@ -1,10 +1,16 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 /* =====================================================
-   🚔 Add Externee / Tadipaar Order Form
+   🚔 Add Externee / Tadipaar Order
 ===================================================== */
 
 export default function AddExternee() {
+  const navigate = useNavigate();
+  const currentAdmin = JSON.parse(localStorage.getItem("user")) || {};
+
+  const [showToast, setShowToast] = useState(false);
+
   const [form, setForm] = useState({
     policeStation: "",
     name: "",
@@ -14,19 +20,26 @@ export default function AddExternee() {
     externmentTill: "",
     externmentResidence: "",
     photo: null,
-
-    // 🔥 useful extra fields (recommended)
     crimeType: "",
     mobile: "",
     remarks: "",
   });
+
+  /* ================= LOGOUT ================= */
+
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    navigate("/login", { replace: true });
+  };
+
+  /* ================= CHANGE ================= */
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  /* ================= SECTION MULTISELECT ================= */
+  /* ================= SECTION ================= */
 
   const handleSectionChange = (section) => {
     setForm((prev) => {
@@ -41,6 +54,21 @@ export default function AddExternee() {
     });
   };
 
+  /* ================= HELPER ================= */
+
+  const getDashboardByRole = (role) => {
+    switch (role) {
+      case "CP":
+        return "/cp-dashboard";
+      case "DCP":
+        return "/dcp-dashboard";
+      case "ACP":
+        return "/acp-dashboard";
+      default:
+        return "/";
+    }
+  };
+
   /* ================= SUBMIT ================= */
 
   const handleSubmit = (e) => {
@@ -48,9 +76,10 @@ export default function AddExternee() {
 
     console.log("🚔 Tadipaar Order Data:", form);
 
-    alert("Externee added (dummy)");
+    // ✅ show toast
+    setShowToast(true);
 
-    // reset
+    // reset form
     setForm({
       policeStation: "",
       name: "",
@@ -64,176 +93,259 @@ export default function AddExternee() {
       mobile: "",
       remarks: "",
     });
+
+    // ✅ redirect after short delay
+    setTimeout(() => {
+      navigate(getDashboardByRole(currentAdmin.role));
+    }, 1200);
   };
 
   /* ===================================================== */
 
   return (
-    <div className="p-6 bg-[#F4F6F9] min-h-screen">
-      {/* HEADER */}
-      <div className="mb-6">
-        <h1 className="text-3xl font-bold text-[#0B3D91]">
-          ➕ Add Externee / Tadipaar Order
-        </h1>
-        <p className="text-gray-600">
-          Police Station Level Entry
-        </p>
+    <div className="min-h-screen bg-[#F4F6F9]">
+      {/* ================= NAVBAR ================= */}
+      <div className="bg-[#0B3D91] text-white px-6 py-4 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+        <div>
+          <h1 className="text-xl font-bold">
+            Maharashtra Police • Tadipaar System
+          </h1>
+          <p className="text-blue-100 text-sm">Add Externee</p>
+        </div>
+
+        <div className="flex items-center gap-3">
+          <span className="text-sm bg-white/20 px-3 py-1 rounded-full">
+            {currentAdmin?.name}
+          </span>
+
+          <button
+            onClick={handleLogout}
+            className="
+              flex items-center gap-2
+              border border-white/40
+              bg-white/10 backdrop-blur-sm
+              text-white
+              px-4 py-2
+              rounded-lg
+              text-sm font-medium
+              hover:bg-white hover:text-[#0B3D91]
+              transition-all duration-200
+            "
+          >
+            Logout
+          </button>
+        </div>
       </div>
 
-      {/* FORM CARD */}
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white rounded-2xl border shadow-sm p-6 max-w-4xl"
-      >
-        <div className="grid md:grid-cols-2 gap-4">
-          {/* Police Station */}
-          <div>
-            <label className="block text-sm font-medium mb-1">
-              Police Station *
-            </label>
+      {/* ================= TOAST ================= */}
+      {showToast && (
+        <div className="fixed top-5 right-5 bg-green-600 text-white px-5 py-3 rounded-lg shadow-lg z-50">
+          ✅ Externee added successfully
+        </div>
+      )}
+
+      {/* ================= CONTENT ================= */}
+      <div className="p-4 md:p-6 flex justify-center">
+        <form
+          onSubmit={handleSubmit}
+          className="
+    w-full max-w-4xl
+    bg-white
+    rounded-2xl
+    border border-gray-200
+    shadow-sm
+    p-5 md:p-8
+  "
+        >
+          <h2 className="text-2xl md:text-3xl font-bold text-[#0B3D91] mb-6 flex items-center gap-2">
+            <span className="text-3xl">➕</span>
+            Tadipaar Order Details
+          </h2>
+
+          <div className="grid md:grid-cols-2 gap-4">
             <input
               required
               name="policeStation"
               value={form.policeStation}
               onChange={handleChange}
-              className="w-full border rounded-lg p-2"
-              placeholder="e.g. Wakad PS"
+              className="
+  w-full
+  border border-gray-300
+  rounded-xl
+  px-3 py-2.5
+  text-sm
+  focus:outline-none
+  focus:ring-2 focus:ring-[#0B3D91]/30
+  focus:border-[#0B3D91]
+  transition
+"
+              placeholder="Police Station"
             />
-          </div>
 
-          {/* Name */}
-          <div>
-            <label className="block text-sm font-medium mb-1">
-              Name of Externee *
-            </label>
             <input
               required
               name="name"
               value={form.name}
               onChange={handleChange}
-              className="w-full border rounded-lg p-2"
+              className="
+  w-full
+  border border-gray-300
+  rounded-xl
+  px-3 py-2.5
+  text-sm
+  focus:outline-none
+  focus:ring-2 focus:ring-[#0B3D91]/30
+  focus:border-[#0B3D91]
+  transition
+"
+              placeholder="Externee Name"
             />
-          </div>
 
-          {/* Mobile (extra useful) */}
-          <div>
-            <label className="block text-sm font-medium mb-1">
-              Mobile Number
-            </label>
             <input
               name="mobile"
               value={form.mobile}
               onChange={handleChange}
-              className="w-full border rounded-lg p-2"
+              className="
+  w-full
+  border border-gray-300
+  rounded-xl
+  px-3 py-2.5
+  text-sm
+  focus:outline-none
+  focus:ring-2 focus:ring-[#0B3D91]/30
+  focus:border-[#0B3D91]
+  transition
+"
+              placeholder="Mobile Number"
             />
-          </div>
 
-          {/* Crime Type */}
-          <div>
-            <label className="block text-sm font-medium mb-1">
-              Crime Type
-            </label>
             <input
               name="crimeType"
               value={form.crimeType}
               onChange={handleChange}
-              className="w-full border rounded-lg p-2"
-              placeholder="e.g. Robbery"
+              className="
+  w-full
+  border border-gray-300
+  rounded-xl
+  px-3 py-2.5
+  text-sm
+  focus:outline-none
+  focus:ring-2 focus:ring-[#0B3D91]/30
+  focus:border-[#0B3D91]
+  transition
+"
+              placeholder="Crime Type"
             />
           </div>
-        </div>
 
-        {/* Address */}
-        <div className="mt-4">
-          <label className="block text-sm font-medium mb-1">
-            Address *
-          </label>
+          {/* Address */}
           <textarea
             required
             name="address"
             value={form.address}
             onChange={handleChange}
-            className="w-full border rounded-lg p-2"
-            rows={2}
+            className="
+  w-full
+  border border-gray-300
+  rounded-xl
+  px-3 py-2.5
+  text-sm
+  focus:outline-none
+  focus:ring-2 focus:ring-[#0B3D91]/30
+  focus:border-[#0B3D91]
+  transition
+  mt-4
+"
+            placeholder="Address"
           />
-        </div>
 
-        {/* ================= EXTERNMENT SECTION ================= */}
+          {/* Sections */}
+          <div className="mt-5">
+            <p className="text-sm font-semibold text-gray-700 mb-3">
+              Externment Sections
+            </p>
 
-        <div className="mt-4">
-          <label className="block text-sm font-medium mb-2">
-            Externment Sections *
-          </label>
-
-          <div className="flex gap-4">
-            {[55, 56, 57].map((sec) => (
-              <label key={sec} className="flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  checked={form.externmentSections.includes(sec)}
-                  onChange={() => handleSectionChange(sec)}
-                />
-                Section {sec}
-              </label>
-            ))}
+            <div className="flex flex-wrap gap-4">
+              {[55, 56, 57].map((sec) => (
+                <label key={sec} className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    checked={form.externmentSections.includes(sec)}
+                    onChange={() => handleSectionChange(sec)}
+                  />
+                  Section {sec}
+                </label>
+              ))}
+            </div>
           </div>
-        </div>
 
-        {/* ================= PERIOD ================= */}
-
-        <div className="grid md:grid-cols-2 gap-4 mt-4">
-          <div>
-            <label className="block text-sm font-medium mb-1">
-              Externment From *
-            </label>
+          {/* Dates */}
+          <div className="grid md:grid-cols-2 gap-4 mt-4">
             <input
               required
               type="date"
               name="externmentFrom"
               value={form.externmentFrom}
               onChange={handleChange}
-              className="w-full border rounded-lg p-2"
+              className="
+  w-full
+  border border-gray-300
+  rounded-xl
+  px-3 py-2.5
+  text-sm
+  focus:outline-none
+  focus:ring-2 focus:ring-[#0B3D91]/30
+  focus:border-[#0B3D91]
+  transition
+"
             />
-          </div>
 
-          <div>
-            <label className="block text-sm font-medium mb-1">
-              Externment Till *
-            </label>
             <input
               required
               type="date"
               name="externmentTill"
               value={form.externmentTill}
               onChange={handleChange}
-              className="w-full border rounded-lg p-2"
+              className="
+  w-full
+  border border-gray-300
+  rounded-xl
+  px-3 py-2.5
+  text-sm
+  focus:outline-none
+  focus:ring-2 focus:ring-[#0B3D91]/30
+  focus:border-[#0B3D91]
+  transition
+"
             />
           </div>
-        </div>
 
-        {/* Residence during externment */}
-        <div className="mt-4">
-          <label className="block text-sm font-medium mb-1">
-            Address during externment *
-          </label>
+          {/* Residence */}
           <textarea
             required
             name="externmentResidence"
             value={form.externmentResidence}
             onChange={handleChange}
-            className="w-full border rounded-lg p-2"
-            rows={2}
+            className="
+  w-full
+  border border-gray-300
+  rounded-xl
+  px-3 py-2.5
+  text-sm
+  focus:outline-none
+  focus:ring-2 focus:ring-[#0B3D91]/30
+  focus:border-[#0B3D91]
+  transition
+  mt-4
+"
+            placeholder="Residence during externment"
           />
-        </div>
 
-        {/* Photo upload */}
-        <div className="mt-4">
-          <label className="block text-sm font-medium mb-1">
-            Photo Upload
-          </label>
+          {/* Photo */}
           <input
             type="file"
             accept="image/*"
+            className="mt-4"
             onChange={(e) =>
               setForm((prev) => ({
                 ...prev,
@@ -241,27 +353,47 @@ export default function AddExternee() {
               }))
             }
           />
-        </div>
 
-        {/* Remarks */}
-        <div className="mt-4">
-          <label className="block text-sm font-medium mb-1">
-            Remarks
-          </label>
+          {/* Remarks */}
           <textarea
             name="remarks"
             value={form.remarks}
             onChange={handleChange}
-            className="w-full border rounded-lg p-2"
-            rows={2}
+            className="
+  w-full
+  border border-gray-300
+  rounded-xl
+  px-3 py-2.5
+  text-sm
+  focus:outline-none
+  focus:ring-2 focus:ring-[#0B3D91]/30
+  focus:border-[#0B3D91]
+  transition
+  mt-4
+"
+            placeholder="Remarks"
           />
-        </div>
 
-        {/* Submit */}
-        <button className="mt-6 bg-[#0B3D91] text-white px-6 py-2 rounded-lg font-medium hover:bg-blue-900">
-          🚔 Create Tadipaar Order
-        </button>
-      </form>
+          <button
+            type="submit"
+            className="
+    mt-8
+    w-full md:w-auto
+    bg-[#0B3D91]
+    text-white
+    px-8 py-2.5
+    rounded-xl
+    font-semibold
+    hover:bg-blue-900
+    active:scale-[0.98]
+    transition-all
+    shadow-sm
+  "
+          >
+            🚔 Create Tadipaar Order
+          </button>
+        </form>
+      </div>
     </div>
   );
 }
