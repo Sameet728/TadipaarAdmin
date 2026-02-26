@@ -2,7 +2,7 @@ import React, { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 /* =====================================================
-   🔥 Logged in admin
+   Logged In Administrator Data
 ===================================================== */
 
 const currentAdmin = JSON.parse(localStorage.getItem("user")) || {
@@ -12,7 +12,7 @@ const currentAdmin = JSON.parse(localStorage.getItem("user")) || {
 };
 
 /* =====================================================
-   👤 DUMMY EXTERNEES
+   Dummy Externees Database
 ===================================================== */
 
 const dummyExternees = [
@@ -52,7 +52,7 @@ const dummyExternees = [
 ];
 
 /* =====================================================
-   🧮 HELPERS
+   Utility Functions
 ===================================================== */
 
 const getPhotoPendingDays = (externee) => {
@@ -63,43 +63,42 @@ const getPhotoPendingDays = (externee) => {
 };
 
 const StatCard = ({ title, value }) => (
-  <div className="bg-white border rounded-2xl p-5 shadow-sm hover:shadow-md transition">
-    <p className="text-gray-500 text-sm">{title}</p>
-    <h2 className="text-3xl font-bold text-[#0B3D91] mt-1">{value}</h2>
+  <div className="bg-white border border-gray-200 rounded-lg p-5 shadow-sm">
+    <p className="text-gray-600 text-sm font-medium uppercase tracking-wide">{title}</p>
+    <h2 className="text-3xl font-bold text-[#0B3D91] mt-2">{value}</h2>
   </div>
 );
 
 /* =====================================================
-   🚔 ACP DASHBOARD
+   ACP Dashboard Component
 ===================================================== */
 
 export default function ACPDashboard() {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
-const handleLogout = () => {
-  localStorage.removeItem("user");
-  navigate("/login", { replace: true });
-};
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    navigate("/login", { replace: true });
+  };
+
   const [sectionFilter, setSectionFilter] = useState("ALL");
   const [stationFilter, setStationFilter] = useState("ALL");
   const [search, setSearch] = useState("");
 
-  /* ================= ZONE FILTER ================= */
+  /* ================= Zone Filter ================= */
 
   const zoneExternees = useMemo(() => {
-    return dummyExternees.filter(
-      (e) => e.zone === currentAdmin.zone
-    );
+    return dummyExternees.filter((e) => e.zone === currentAdmin.zone);
   }, []);
 
-  /* ================= STATION OPTIONS ================= */
+  /* ================= Station Options ================= */
 
   const stationOptions = useMemo(() => {
     const set = new Set(zoneExternees.map((e) => e.policeStation));
     return ["ALL", ...Array.from(set)];
   }, [zoneExternees]);
 
-  /* ================= FILTER LOGIC ================= */
+  /* ================= Filter Logic ================= */
 
   const filteredExternees = useMemo(() => {
     let data = [...zoneExternees];
@@ -111,9 +110,7 @@ const handleLogout = () => {
     }
 
     if (stationFilter !== "ALL") {
-      data = data.filter(
-        (e) => e.policeStation === stationFilter
-      );
+      data = data.filter((e) => e.policeStation === stationFilter);
     }
 
     if (search.trim()) {
@@ -125,89 +122,70 @@ const handleLogout = () => {
     return data;
   }, [sectionFilter, stationFilter, search, zoneExternees]);
 
-  const photoPending = zoneExternees.filter(
-    (e) => !e.photoUploadedAt
-  );
-
-  const violations = zoneExternees.filter(
-    (e) => e.enteredInOurArea
-  );
+  const photoPending = zoneExternees.filter((e) => !e.photoUploadedAt);
+  const violations = zoneExternees.filter((e) => e.enteredInOurArea);
 
   /* ===================================================== */
 
   return (
-    <div className="min-h-screen bg-[#F4F6F9]">
-      {/* ================= NAVBAR ================= */}
-      <div className="bg-[#0B3D91] text-white px-6 py-4 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+    <div className="min-h-screen bg-gray-50 font-sans">
+      {/* ================= Navbar ================= */}
+      <header className="bg-[#0B3D91] text-white px-6 py-4 flex flex-col md:flex-row md:items-center md:justify-between gap-4 shadow-md">
         <div>
-          <h1 className="text-xl font-bold">
-            Maharashtra Police • Tadipaar System
+          <h1 className="text-xl font-bold tracking-wide">
+            Maharashtra Police | Tadipaar Monitoring System
           </h1>
-          <p className="text-blue-100 text-sm">
-            ACP Sub-Division Monitoring
+          <p className="text-blue-200 text-sm mt-1">
+            ACP Sub-Division Operational Dashboard
           </p>
-          
         </div>
-        
-<div className="flex  flex-row  gap-7 justify-items items-center">
-        <span className="text-sm bg-white/20 px-3 py-1 rounded-full w-fit">
-          {currentAdmin.name}
-        </span>
-       <button
+
+        <div className="flex flex-row gap-6 items-center">
+          <span className="text-sm bg-white/10 px-4 py-1.5 rounded-md border border-white/20 font-medium w-fit">
+            Officer: {currentAdmin.name}
+          </span>
+          <button
             onClick={handleLogout}
-            className="
-              flex items-center gap-2
-              border border-white/40
-              bg-white/10 backdrop-blur-sm
-              text-white
-              px-4 py-2
-              rounded-lg
-              text-sm font-medium
-              hover:bg-white hover:text-[#0B3D91]
-              transition-all duration-200
-            "
+            className="flex items-center gap-2 border border-white/30 bg-white/5 text-white px-5 py-2 rounded-md text-sm font-semibold hover:bg-white hover:text-[#0B3D91] transition-colors duration-200"
           >
-            Logout
+            Secure Logout
           </button>
+        </div>
+      </header>
 
-    </div>
-
-        
-        
-      </div>
-
-      {/* ================= CONTENT ================= */}
-      <div className="p-6">
-        {/* 🚨 ALERT STRIP */}
+      {/* ================= Main Content ================= */}
+      <main className="p-6 max-w-7xl mx-auto">
+        {/* Alert Banner */}
         {violations.length > 0 && (
-          <div className="mb-4 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl font-medium">
-            🚨 {violations.length} externees entered restricted area
+          <div className="mb-6 bg-red-50 border-l-4 border-red-700 text-red-800 px-5 py-4 rounded-r-md shadow-sm font-medium flex items-center">
+            <span className="mr-2 font-bold">ATTENTION:</span> {violations.length} {violations.length === 1 ? 'externee has' : 'externees have'} breached restricted jurisdiction parameters. Immediate action required.
           </div>
         )}
 
-        {/* ================= STATS ================= */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-          <StatCard title="Zone Externees" value={zoneExternees.length} />
-          <StatCard title="Photo Pending" value={photoPending.length} />
-          <StatCard title="Area Violations" value={violations.length} />
-          <StatCard title="Filtered Result" value={filteredExternees.length} />
+        {/* ================= Key Statistics ================= */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
+          <StatCard title="Total Zone Externees" value={zoneExternees.length} />
+          <StatCard title="Photographs Pending" value={photoPending.length} />
+          <StatCard title="Jurisdiction Violations" value={violations.length} />
+          <StatCard title="Active Filter Results" value={filteredExternees.length} />
         </div>
 
-        {/* ================= FILTER BAR ================= */}
-        <div className="bg-white p-4 rounded-2xl border mb-4 flex flex-col md:flex-row gap-3 md:items-center">
+        {/* ================= Control Panel / Filters ================= */}
+        <div className="bg-white p-5 rounded-lg border border-gray-200 shadow-sm mb-6 flex flex-col md:flex-row gap-4 md:items-center">
           <input
-            placeholder="Search externee..."
+            type="text"
+            placeholder="Search by externee name..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="border rounded-lg px-3 py-2 w-full md:w-64"
+            className="border border-gray-300 rounded-md px-4 py-2 w-full md:w-72 focus:outline-none focus:ring-2 focus:ring-[#0B3D91] focus:border-transparent"
           />
 
           <select
             value={sectionFilter}
             onChange={(e) => setSectionFilter(e.target.value)}
-            className="border rounded-lg px-3 py-2"
+            className="border border-gray-300 rounded-md px-4 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-[#0B3D91]"
           >
-            <option value="ALL">All Sections</option>
+            <option value="ALL">All Legal Sections</option>
             <option value="55">Section 55</option>
             <option value="56">Section 56</option>
             <option value="57">Section 57</option>
@@ -216,67 +194,67 @@ const handleLogout = () => {
           <select
             value={stationFilter}
             onChange={(e) => setStationFilter(e.target.value)}
-            className="border rounded-lg px-3 py-2"
+            className="border border-gray-300 rounded-md px-4 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-[#0B3D91]"
           >
             {stationOptions.map((s) => (
               <option key={s} value={s}>
-                {s === "ALL" ? "All Stations" : s}
+                {s === "ALL" ? "All Police Stations" : s}
               </option>
             ))}
           </select>
         </div>
 
-        {/* ================= TABLE ================= */}
-        <div className="bg-white rounded-2xl shadow-sm border overflow-hidden">
-          <div className="p-4 border-b">
-            <h2 className="text-xl font-semibold text-[#0B3D91]">
-              📋 Externee Monitoring
+        {/* ================= Data Table ================= */}
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+          <div className="p-5 border-b border-gray-200 bg-gray-50">
+            <h2 className="text-lg font-bold text-gray-800 uppercase tracking-wide">
+              Externee Monitoring Roster
             </h2>
           </div>
 
           <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead className="bg-gray-50 text-gray-600">
+            <table className="w-full text-sm text-left">
+              <thead className="bg-gray-100 text-gray-700 uppercase font-semibold text-xs border-b border-gray-200">
                 <tr>
-                  <th className="p-3 text-left">Name</th>
-                  <th className="p-3 text-left">Police Station</th>
-                  <th className="p-3 text-left">Sections</th>
-                  <th className="p-3 text-left">Period</th>
-                  <th className="p-3 text-left">Photo Status</th>
-                  <th className="p-3 text-left">Area Status</th>
+                  <th className="px-5 py-4">Externee Name</th>
+                  <th className="px-5 py-4">Police Station</th>
+                  <th className="px-5 py-4">Sections Applied</th>
+                  <th className="px-5 py-4">Active Period</th>
+                  <th className="px-5 py-4">Photograph Status</th>
+                  <th className="px-5 py-4">Jurisdiction Status</th>
                 </tr>
               </thead>
 
-              <tbody>
+              <tbody className="divide-y divide-gray-200 text-gray-800">
                 {filteredExternees.map((e) => (
-                  <tr key={e._id} className="border-t hover:bg-gray-50">
-                    <td className="p-3 font-medium">{e.name}</td>
-                    <td className="p-3">{e.policeStation}</td>
-                    <td className="p-3">
+                  <tr key={e._id} className="hover:bg-gray-50 transition-colors">
+                    <td className="px-5 py-4 font-semibold">{e.name}</td>
+                    <td className="px-5 py-4">{e.policeStation}</td>
+                    <td className="px-5 py-4 font-mono text-xs">
                       {e.externmentSections.join(", ")}
                     </td>
-                    <td className="p-3">
-                      {e.externmentFrom} → {e.externmentTill}
+                    <td className="px-5 py-4 text-gray-600">
+                      {e.externmentFrom} <span className="mx-1">to</span> {e.externmentTill}
                     </td>
-                    <td className="p-3">
+                    <td className="px-5 py-4">
                       {!e.photoUploadedAt ? (
-                        <span className="text-red-600 font-semibold">
-                          ❌ Not Uploaded
+                        <span className="text-red-700 font-semibold bg-red-50 px-2 py-1 rounded border border-red-200">
+                          Pending Upload
                         </span>
                       ) : (
-                        <span className="text-green-600 font-semibold">
-                          ✅ {getPhotoPendingDays(e)} days
+                        <span className="text-green-700 font-semibold">
+                          Uploaded ({getPhotoPendingDays(e)} days ago)
                         </span>
                       )}
                     </td>
-                    <td className="p-3">
+                    <td className="px-5 py-4">
                       {e.enteredInOurArea ? (
-                        <span className="text-red-600 font-semibold">
-                          🚨 Violation
+                        <span className="text-red-700 font-bold bg-red-50 px-3 py-1 rounded border border-red-300">
+                          Violation Detected
                         </span>
                       ) : (
-                        <span className="text-green-600 font-semibold">
-                          ✅ OK
+                        <span className="text-green-700 font-medium">
+                          Compliant
                         </span>
                       )}
                     </td>
@@ -285,8 +263,8 @@ const handleLogout = () => {
 
                 {filteredExternees.length === 0 && (
                   <tr>
-                    <td colSpan="6" className="p-6 text-center text-gray-500">
-                      No externees found
+                    <td colSpan="6" className="px-5 py-8 text-center text-gray-500 font-medium">
+                      No records found matching the current criteria.
                     </td>
                   </tr>
                 )}
@@ -294,7 +272,7 @@ const handleLogout = () => {
             </table>
           </div>
         </div>
-      </div>
+      </main>
     </div>
   );
 }

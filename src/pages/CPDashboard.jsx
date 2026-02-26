@@ -1,19 +1,13 @@
 import React, { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-/* =====================================================
-   👑 Logged in CP
-===================================================== */
-
+// Administrator profile configuration
 const currentAdmin = JSON.parse(localStorage.getItem("user")) || {
   role: "CP",
   name: "CP Pune",
 };
 
-/* =====================================================
-   👤 CITY-WIDE DUMMY EXTERNEES
-===================================================== */
-
+// Mock data store for city-wide records
 const dummyExternees = [
   {
     _id: "EX1",
@@ -50,10 +44,7 @@ const dummyExternees = [
   },
 ];
 
-/* =====================================================
-   🧮 HELPERS
-===================================================== */
-
+// Utility to calculate days since the last photo upload
 const getPhotoPendingDays = (externee) => {
   if (!externee.photoUploadedAt) return "Not Uploaded";
   const today = new Date();
@@ -61,36 +52,32 @@ const getPhotoPendingDays = (externee) => {
   return Math.floor((today - uploaded) / (1000 * 60 * 60 * 24));
 };
 
+// Reusable metrics card
 const StatCard = ({ title, value }) => (
-  <div className="bg-white border rounded-2xl p-5 shadow-sm hover:shadow-md transition">
-    <p className="text-gray-500 text-sm">{title}</p>
-    <h2 className="text-3xl font-bold text-[#0B3D91] mt-1">{value}</h2>
+  <div className="bg-white border border-gray-200 rounded-lg p-5 shadow-sm">
+    <p className="text-gray-600 text-sm font-medium uppercase tracking-wide">{title}</p>
+    <h2 className="text-3xl font-bold text-[#0B3D91] mt-2">{value}</h2>
   </div>
 );
 
-/* =====================================================
-   👑 CP DASHBOARD
-===================================================== */
-
 export default function CPDashboard() {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
-const handleLogout = () => {
-  localStorage.removeItem("user");
-  navigate("/login", { replace: true });
-};
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    navigate("/login", { replace: true });
+  };
+
   const [zoneFilter, setZoneFilter] = useState("ALL");
   const [search, setSearch] = useState("");
 
-  /* ================= ZONE OPTIONS ================= */
-
+  // Extract unique zones for the filter dropdown
   const zoneOptions = useMemo(() => {
     const set = new Set(dummyExternees.map((e) => e.zone));
     return ["ALL", ...Array.from(set)];
   }, []);
 
-  /* ================= FILTERED DATA ================= */
-
+  // Apply search and zone filters to the dataset
   const filteredData = useMemo(() => {
     let data = [...dummyExternees];
 
@@ -107,140 +94,137 @@ const handleLogout = () => {
     return data;
   }, [zoneFilter, search]);
 
-  /* ================= INTELLIGENCE ================= */
-
+  // Aggregate metrics for the dashboard view
   const totalExternees = dummyExternees.length;
   const photoPending = dummyExternees.filter((e) => !e.photoUploadedAt);
   const violations = dummyExternees.filter((e) => e.enteredInOurArea);
 
-  /* ================================================= */
-
   return (
-    <div className="min-h-screen bg-[#F4F6F9]">
-      {/* ================= NAVBAR ================= */}
-      <div className="bg-[#0B3D91] text-white px-6 py-4 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+    <div className="min-h-screen bg-gray-50 font-sans">
+      {/* Header section */}
+      <header className="bg-[#0B3D91] text-white px-6 py-4 flex flex-col md:flex-row md:items-center md:justify-between gap-4 shadow-md">
         <div>
-          <h1 className="text-xl font-bold">
-            Maharashtra Police • Tadipaar System
+          <h1 className="text-xl font-bold tracking-wide">
+            Maharashtra Police | Tadipaar Monitoring System
           </h1>
-          <p className="text-blue-100 text-sm">
+          <p className="text-blue-200 text-sm mt-1">
             Commissioner Command Center
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
-          <span className="text-sm bg-white/20 px-3 py-1 rounded-full">
-            {currentAdmin.name}
+        <div className="flex flex-row gap-4 items-center flex-wrap">
+          <span className="text-sm bg-white/10 px-4 py-1.5 rounded-md border border-white/20 font-medium w-fit">
+            Officer: {currentAdmin.name}
           </span>
 
           {["CP", "DCP"].includes(currentAdmin.role) && (
             <button
               onClick={() => (window.location.href = "/add-externee")}
-              className="bg-white text-[#0B3D91] px-4 py-2 rounded-lg font-semibold hover:bg-gray-100"
+              className="bg-white text-[#0B3D91] border border-transparent px-5 py-2 rounded-md text-sm font-semibold hover:bg-gray-100 transition-colors duration-200"
             >
-              ➕ Add Externee
+              Add New Record
             </button>
           )}
+
           <button
             onClick={handleLogout}
-            className="
-              flex items-center gap-2
-              border border-white/40
-              bg-white/10 backdrop-blur-sm
-              text-white
-              px-4 py-2
-              rounded-lg
-              text-sm font-medium
-              hover:bg-white hover:text-[#0B3D91]
-              transition-all duration-200
-            "
+            className="flex items-center gap-2 border border-white/30 bg-white/5 text-white px-5 py-2 rounded-md text-sm font-semibold hover:bg-white hover:text-[#0B3D91] transition-colors duration-200"
           >
-            Logout
+            Secure Logout
           </button>
         </div>
-      </div>
+      </header>
 
-      {/* ================= CONTENT ================= */}
-      <div className="p-6">
-        {/* STATS */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-          <StatCard title="City Externees" value={totalExternees} />
-          <StatCard title="Photo Pending" value={photoPending.length} />
-          <StatCard title="Area Violations" value={violations.length} />
-          <StatCard title="Active Zones" value={zoneOptions.length - 1} />
+      {/* Main dashboard content */}
+      <main className="p-6 max-w-7xl mx-auto">
+        
+        {/* Violation alerts */}
+        {violations.length > 0 && (
+          <div className="mb-6 bg-red-50 border-l-4 border-red-700 text-red-800 px-5 py-4 rounded-r-md shadow-sm font-medium flex items-center">
+            <span className="mr-2 font-bold">CRITICAL ALERT:</span> {violations.length} {violations.length === 1 ? 'externee has' : 'externees have'} breached restricted jurisdiction parameters across the city.
+          </div>
+        )}
+
+        {/* Metrics summary */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
+          <StatCard title="Total City Records" value={totalExternees} />
+          <StatCard title="Photographs Pending" value={photoPending.length} />
+          <StatCard title="Jurisdiction Violations" value={violations.length} />
+          <StatCard title="Active Zones Monitored" value={zoneOptions.length - 1} />
         </div>
 
-        {/* FILTER BAR */}
-        <div className="bg-white p-4 rounded-2xl border mb-4 flex flex-col md:flex-row gap-3 md:items-center md:justify-between">
+        {/* Data control panel */}
+        <div className="bg-white p-5 rounded-lg border border-gray-200 shadow-sm mb-6 flex flex-col md:flex-row gap-4 md:items-center">
           <input
-            placeholder="Search externee..."
+            type="text"
+            placeholder="Search by externee name..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="border rounded-lg px-3 py-2 w-full md:w-64"
+            className="border border-gray-300 rounded-md px-4 py-2 w-full md:w-72 focus:outline-none focus:ring-2 focus:ring-[#0B3D91] focus:border-transparent"
           />
 
           <select
             value={zoneFilter}
             onChange={(e) => setZoneFilter(e.target.value)}
-            className="border rounded-lg px-3 py-2 w-full md:w-48"
+            className="border border-gray-300 rounded-md px-4 py-2 bg-white w-full md:w-64 focus:outline-none focus:ring-2 focus:ring-[#0B3D91]"
           >
             {zoneOptions.map((z) => (
               <option key={z} value={z}>
-                {z === "ALL" ? "All Zones" : z}
+                {z === "ALL" ? "All Administrative Zones" : z}
               </option>
             ))}
           </select>
         </div>
 
-        {/* TABLE */}
-        <div className="bg-white rounded-2xl shadow-sm border overflow-hidden">
-          <div className="p-4 border-b">
-            <h2 className="text-xl font-semibold text-[#0B3D91]">
-              📋 City Monitoring
+        {/* Records table */}
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+          <div className="p-5 border-b border-gray-200 bg-gray-50">
+            <h2 className="text-lg font-bold text-gray-800 uppercase tracking-wide">
+              City-Wide Monitoring Roster
             </h2>
           </div>
 
           <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead className="bg-gray-50 text-gray-600">
+            <table className="w-full text-sm text-left">
+              <thead className="bg-gray-100 text-gray-700 uppercase font-semibold text-xs border-b border-gray-200">
                 <tr>
-                  <th className="p-3 text-left">Name</th>
-                  <th className="p-3 text-left">Zone</th>
-                  <th className="p-3 text-left">Police Station</th>
-                  <th className="p-3 text-left">Sections</th>
-                  <th className="p-3 text-left">Photo Status</th>
-                  <th className="p-3 text-left">Area Status</th>
+                  <th className="px-5 py-4">Externee Name</th>
+                  <th className="px-5 py-4">Zone</th>
+                  <th className="px-5 py-4">Police Station</th>
+                  <th className="px-5 py-4">Sections Applied</th>
+                  <th className="px-5 py-4">Photograph Status</th>
+                  <th className="px-5 py-4">Jurisdiction Status</th>
                 </tr>
               </thead>
 
-              <tbody>
+              <tbody className="divide-y divide-gray-200 text-gray-800">
                 {filteredData.map((e) => (
-                  <tr key={e._id} className="border-t hover:bg-gray-50">
-                    <td className="p-3 font-medium">{e.name}</td>
-                    <td className="p-3">{e.zone}</td>
-                    <td className="p-3">{e.policeStation}</td>
-                    <td className="p-3">
+                  <tr key={e._id} className="hover:bg-gray-50 transition-colors">
+                    <td className="px-5 py-4 font-semibold">{e.name}</td>
+                    <td className="px-5 py-4">{e.zone}</td>
+                    <td className="px-5 py-4">{e.policeStation}</td>
+                    <td className="px-5 py-4 font-mono text-xs">
                       {e.externmentSections.join(", ")}
                     </td>
-                    <td className="p-3">
+                    <td className="px-5 py-4">
                       {!e.photoUploadedAt ? (
-                        <span className="text-red-600 font-semibold">
-                          ❌ Not Uploaded
+                        <span className="text-red-700 font-semibold bg-red-50 px-2 py-1 rounded border border-red-200">
+                          Pending Upload
                         </span>
                       ) : (
-                        <span className="text-green-600 font-semibold">
-                          ✅ {getPhotoPendingDays(e)} days
+                        <span className="text-green-700 font-semibold">
+                          Uploaded ({getPhotoPendingDays(e)} days ago)
                         </span>
                       )}
                     </td>
-                    <td className="p-3">
+                    <td className="px-5 py-4">
                       {e.enteredInOurArea ? (
-                        <span className="text-red-600 font-semibold">
-                          🚨 Violation
+                        <span className="text-red-700 font-bold bg-red-50 px-3 py-1 rounded border border-red-300">
+                          Violation Detected
                         </span>
                       ) : (
-                        <span className="text-green-600 font-semibold">
-                          ✅ OK
+                        <span className="text-green-700 font-medium">
+                          Compliant
                         </span>
                       )}
                     </td>
@@ -249,8 +233,8 @@ const handleLogout = () => {
 
                 {filteredData.length === 0 && (
                   <tr>
-                    <td colSpan="6" className="p-6 text-center text-gray-500">
-                      No externees found
+                    <td colSpan="6" className="px-5 py-8 text-center text-gray-500 font-medium">
+                      No records found matching the current criteria.
                     </td>
                   </tr>
                 )}
@@ -258,7 +242,7 @@ const handleLogout = () => {
             </table>
           </div>
         </div>
-      </div>
+      </main>
     </div>
   );
 }
