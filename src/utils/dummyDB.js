@@ -1,144 +1,219 @@
-// ===============================
-// 🚔 ADMINS
-// ===============================
-export const dummyAdmins = [
+// ======================================================
+// 📦 TADIPAAR DUMMY MASTER DATA (STEP 1)
+// Frontend Only | Sameet Project
+// ======================================================
+
+// ======================================================
+// 🚔 ADMINS (ROLE TESTING)
+// ======================================================
+// src/data/demoUsers.js
+
+const demoUsers = [
   {
-    _id: "A1",
-    name: "DCP Pune",
-    email: "dcp@pune.police",
+    id: "U1",
+    username: "cp_pune",
+    password: "123456",
+    role: "CP",
+    name: "CP Pune",
+    zone: null, // CP sees all zones
+  },
+  {
+    id: "U2",
+    username: "dcp_pune",
+    password: "123456",
     role: "DCP",
-    zone: null,
-    policeStation: null,
+    name: "DCP Pune",
+    zone: "Zone-2", // ⭐ REQUIRED for DCP dashboard
   },
   {
-    _id: "A2",
-    name: "ACP Shivajinagar",
-    email: "acp.zone1@pune.police",
+    id: "U3",
+    username: "acp_zone1",
+    password: "123456",
     role: "ACP",
-    zone: "Zone-1",
-    policeStation: null,
+    name: "ACP Zone 1",
+    zone: "Zone-1", // ⭐ REQUIRED for ACP dashboard
   },
   {
-    _id: "A3",
+    id: "U4",
+    username: "station_admin",
+    password: "123456",
+    role: "STATION_ADMIN",
     name: "PSI Wakad",
-    email: "psi.wakad@pune.police",
-    role: "PSI",
-    zone: "Zone-1",
-    policeStation: "Wakad Police Station",
+    zone: "Zone-2",
+    policeStation: "Wakad PS",
   },
-];
-
-// 🔥 Active logged-in admin (change for testing)
-export const currentAdmin = dummyAdmins[0]; // change index 0/1/2
-
-// ===============================
-// 👤 CRIMINALS
-// ===============================
-export const dummyCriminals = [
   {
-    _id: "C1",
+    id: "U5",
+    username: "ramesh_k",
+    password: "123",
+    role: "CRIMINAL",
     name: "Ramesh Pawar",
-    age: 32,
-    gender: "Male",
-    phone: "9876543210",
+  },
+];
+
+
+
+export default demoUsers;
+
+// 🔥 change index to test role
+
+// ======================================================
+// 🗺️ AREA DEMARCATION (AS PROVIDED BY POLICE)
+// ======================================================
+export const areaDemarcation = [
+  {
     zone: "Zone-1",
-    policeStation: "Wakad Police Station",
-    loginId: "CR123456",
-    status: "active",
+    acps: [
+      {
+        name: "ACP Pimpri",
+        stations: ["Pimpri PS", "Chinchwad PS", "Nigdi PS"],
+      },
+      {
+        name: "ACP Sangawi",
+        stations: [
+          "Sant Tukaram Nagar PS",
+          "Dapodi PS",
+          "Sangawi PS",
+        ],
+      },
+    ],
   },
   {
-    _id: "C2",
+    zone: "Zone-2",
+    acps: [
+      {
+        name: "ACP Wakad",
+        stations: ["Wakad PS", "Kalewadi PS", "Ravet PS"],
+      },
+      {
+        name: "ACP Hinjewadi",
+        stations: ["Hinjewadi PS", "Bawdhan PS"],
+      },
+    ],
+  },
+  {
+    zone: "Zone-3",
+    acps: [
+      {
+        name: "ACP Bhosari MIDC",
+        stations: ["Bhosari MIDC PS", "Dighi PS", "Bhosari PS"],
+      },
+      {
+        name: "ACP Chakan",
+        stations: [
+          "Chakan South PS",
+          "Chakan North PS",
+          "Alandi PS",
+        ],
+      },
+    ],
+  },
+  {
+    zone: "Zone-4",
+    acps: [
+      {
+        name: "ACP Dehu Road",
+        stations: ["Dehu Road PS", "Shirgaon PS", "Chikhali PS"],
+      },
+      {
+        name: "ACP Mhalunge MIDC",
+        stations: ["Mhalunge North PS", "Mhalunge South PS"],
+      },
+    ],
+  },
+];
+
+// ======================================================
+// 👤 EXTERNEE MASTER (POLICE STATION LEVEL DATA)
+// ✅ includes ALL required fields
+// ======================================================
+export const dummyExternees = [
+  {
+    _id: "EX1",
+
+    // Basic
+    name: "Ramesh Pawar",
+    address: "Shivaji Nagar, Pune",
+    policeStation: "Wakad PS",
+    zone: "Zone-2",
+    acp: "ACP Wakad",
+
+    // Externment
+    externmentSections: [55, 56],
+    externmentFrom: "2026-02-01",
+    externmentTill: "2026-06-01",
+    externmentResidence: "Satara, Maharashtra",
+
+    // Photo
+    photoUrl: "https://via.placeholder.com/100",
+    photoUploadedAt: "2026-02-10",
+
+    // Monitoring helpers (IMPORTANT)
+    enteredInOurArea: false,
+
+    createdAt: "2026-02-01",
+  },
+
+  {
+    _id: "EX2",
     name: "Suresh Shinde",
-    age: 28,
-    gender: "Male",
-    phone: "9123456780",
-    zone: "Zone-2",
-    policeStation: "Hinjewadi Police Station",
-    loginId: "CR654321",
-    status: "active",
+    address: "Bhosari MIDC, Pune",
+    policeStation: "Bhosari MIDC PS",
+    zone: "Zone-3",
+    acp: "ACP Bhosari MIDC",
+
+    externmentSections: [57],
+    externmentFrom: "2026-01-15",
+    externmentTill: "2026-05-15",
+    externmentResidence: "Solapur, Maharashtra",
+
+    photoUrl: "", // ❌ not uploaded
+    photoUploadedAt: null,
+
+    enteredInOurArea: true, // 🚨 violation sample
+
+    createdAt: "2026-01-15",
   },
+
   {
-    _id: "C3",
+    _id: "EX3",
     name: "Akash More",
-    age: 35,
-    gender: "Male",
-    phone: "9988776655",
+    address: "Nigdi, Pune",
+    policeStation: "Nigdi PS",
     zone: "Zone-1",
-    policeStation: "Wakad Police Station",
-    loginId: "CR789123",
-    status: "active",
+    acp: "ACP Pimpri",
+
+    externmentSections: [55, 57],
+    externmentFrom: "2026-02-05",
+    externmentTill: "2026-08-05",
+    externmentResidence: "Nashik, Maharashtra",
+
+    photoUrl: "https://via.placeholder.com/100",
+    photoUploadedAt: "2026-02-06",
+
+    enteredInOurArea: false,
+
+    createdAt: "2026-02-05",
   },
 ];
 
-// ===============================
-// 📍 RESTRICTED AREAS
-// ===============================
-export const dummyAreas = [
-  {
-    _id: "AR1",
-    areaName: "Shivaji Nagar",
-    latitude: 18.5308,
-    longitude: 73.8475,
-    radiusKm: 5,
-    zone: "Zone-1",
-  },
-  {
-    _id: "AR2",
-    areaName: "Hinjewadi Phase 1",
-    latitude: 18.5912,
-    longitude: 73.7389,
-    radiusKm: 3,
-    zone: "Zone-2",
-  },
-];
+// ======================================================
+// 🧮 DERIVED HELPERS (FOR ACP/DCP/CP DASHBOARD)
+// ======================================================
 
-// ===============================
-// 🚔 TADIPAAR ORDERS
-// ===============================
-export const dummyOrders = [
-  {
-    _id: "T1",
-    criminalId: "C1",
-    crimeType: "Robbery",
-    startDate: "2026-02-01",
-    endDate: "2026-06-01",
-    restrictedAreaIds: ["AR1"],
-    status: "active",
-  },
-  {
-    _id: "T2",
-    criminalId: "C2",
-    crimeType: "Chain Snatching",
-    startDate: "2026-01-15",
-    endDate: "2026-05-15",
-    restrictedAreaIds: ["AR2"],
-    status: "active",
-  },
-];
+export const getPhotoPendingDays = (externee) => {
+  if (!externee.photoUploadedAt) return "Not Uploaded";
 
-// ===============================
-// 📸 DAILY TADIPAAR RECORDS
-// ===============================
-export const dummyDailyRecords = [
-  {
-    _id: "R1",
-    criminalId: "C1",
-    date: "2026-02-20",
-    status: "compliant",
-    selfieUrl: "https://via.placeholder.com/100",
-  },
-  {
-    _id: "R2",
-    criminalId: "C1",
-    date: "2026-02-21",
-    status: "location_violation",
-    selfieUrl: "https://via.placeholder.com/100",
-  },
-  {
-    _id: "R3",
-    criminalId: "C2",
-    date: "2026-02-21",
-    status: "not_reported",
-    selfieUrl: "",
-  },
-];
+  const today = new Date();
+  const uploaded = new Date(externee.photoUploadedAt);
+  const diff = Math.floor((today - uploaded) / (1000 * 60 * 60 * 24));
+  return diff;
+};
+
+export const photoPendingList = dummyExternees.filter(
+  (e) => !e.photoUploadedAt
+);
+
+export const areaViolationList = dummyExternees.filter(
+  (e) => e.enteredInOurArea
+);

@@ -32,6 +32,16 @@ const demoUsers = [
     rank: "PI",
     buckle_number: "MP3003",
   },
+  {
+    id: 4,
+    username: "ramesh_k",
+    password: "123",
+    name: "Ramesh Kale",
+    role: "CRIMINAL",
+    aadhaar: "1234-5678-9012",
+    police_station: "Swargate",
+    mobile: "9988776655",
+  }
 ];
 
 export default demoUsers;
